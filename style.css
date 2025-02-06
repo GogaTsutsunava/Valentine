@@ -1,0 +1,70 @@
+body {
+    text-align: center;
+    font-family: "Luckiest Guy", serif;
+    font-weight: 400;
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.puzzle-container,
+.reference-image {
+    width: 400px;
+    height: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid #000;
+    position: relative;
+}
+
+.puzzle-piece {
+    width: 100px;
+    height: 125px;
+    background-size: 400px 500px;
+    cursor: grab;
+    border: 1px solid #ddd;
+    position: absolute;
+}
+
+#message {
+    display: none;
+    margin-top: 20px;
+    font-size: 24px;
+    color: red;
+}
+
+#buttons {
+    display: none;
+    margin-top: 20px;
+}
+
+button {
+    font-size: 18px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 10px;
+}
+#response{
+    display: none;
+}
+body{
+    font-family: "Luckiest Guy", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+@media (max-width: 600px) {
+    .container{
+        flex-direction: column;
+        align-items: center;
+    }
+    
+}
