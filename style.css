@@ -6,6 +6,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #38040e;
+  
 }
 
 .container {
@@ -54,6 +56,7 @@ button {
 }
 #response{
     display: none;
+    color: white;
 }
 body{
     font-family: "Luckiest Guy", serif;

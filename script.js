@@ -1,4 +1,4 @@
-const imageUrl = 'download.jpeg';
+const imageUrl = 'us.jpg';
 const puzzleContainer = document.getElementById("puzzle-container");
 const message = document.getElementById("message");
 const buttons = document.getElementById("buttons");
