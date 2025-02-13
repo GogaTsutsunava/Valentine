@@ -7,6 +7,7 @@ const noButton = document.getElementById("no");
 let pieces = [];
 let positions = [];
 
+// Create puzzle pieces
 for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
         let piece = document.createElement("div");
@@ -16,14 +17,22 @@ for (let row = 0; row < 4; row++) {
         piece.dataset.correctX = col * 100;
         piece.dataset.correctY = row * 125;
         pieces.push(piece);
-        positions.push({ x: col * 100, y: row * 125 });
     }
 }
 
-positions.sort(() => Math.random() - 0.5);
+// Assign initial random positions
+let availablePositions = [];
+for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+        availablePositions.push({ x: col * 100, y: row * 125 });
+    }
+}
+
+availablePositions.sort(() => Math.random() - 0.5);
+
 pieces.forEach((piece, index) => {
-    piece.style.left = `${positions[index].x}px`;
-    piece.style.top = `${positions[index].y}px`;
+    piece.style.left = `${availablePositions[index].x}px`;
+    piece.style.top = `${availablePositions[index].y}px`;
     puzzleContainer.appendChild(piece);
 });
 
@@ -35,17 +44,82 @@ pieces.forEach(piece => {
     piece.addEventListener("drop", e => {
         e.preventDefault();
         if (draggedPiece && draggedPiece !== e.target) {
-            let tempX = draggedPiece.style.left;
-            let tempY = draggedPiece.style.top;
-            draggedPiece.style.left = e.target.style.left;
-            draggedPiece.style.top = e.target.style.top;
-            e.target.style.left = tempX;
-            e.target.style.top = tempY;
+            // Swap the two adjacent pieces
+            swapPieces(draggedPiece, e.target);
             checkCompletion();
         }
     });
 });
 
+// Swap pieces function
+function swapPieces(piece1, piece2) {
+    let tempX = piece1.style.left;
+    let tempY = piece1.style.top;
+
+    piece1.style.left = piece2.style.left;
+    piece1.style.top = piece2.style.top;
+
+    piece2.style.left = tempX
+    piece2.style.top = tempY;
+}
+
+// Mobile touch events for swapping
+let previousPosition = { left: null, top: null };
+
+pieces.forEach(piece => {
+    piece.addEventListener('touchstart', (e) => {
+        draggedPiece = piece;  
+        let tempX = piece.style.left;
+        let tempY = piece.style.top;
+    
+        piece.style.left = piece.style.left;
+        piece.style.top = piece.style.top;
+    
+        piece.style.left = tempX
+        piece.style.top = tempY;
+        piece.style.transition = 'none';
+
+    
+
+        // Touchend event for swapping
+        piece.addEventListener('touchend', () => {
+            if (draggedPiece) {
+                piece.style.transition = ''; // Enable transition after dragging
+                let adjacentPiece = findAdjacentPiece(draggedPiece);
+
+                if (adjacentPiece) {
+                    // Swap the dragged piece with the adjacent piece
+                    swapPieces(draggedPiece, adjacentPiece);
+                    checkCompletion();
+                }
+
+                draggedPiece = null; 
+            }
+        });
+    });
+});
+
+// Function to find adjacent piece for mobile
+function findAdjacentPiece(draggedPiece) {
+    let draggedX = parseInt(draggedPiece.style.left);
+    let draggedY = parseInt(draggedPiece.style.top);
+
+    for (let piece of pieces) {
+        if (piece !== draggedPiece) {
+            let pieceX = parseInt(piece.style.left);
+            let pieceY = parseInt(piece.style.top);
+
+            // If the pieces are adjacent horizontally or vertically
+            if ((Math.abs(draggedX - pieceX) === 100 && draggedY === pieceY) || 
+                (Math.abs(draggedY - pieceY) === 125 && draggedX === pieceX)) {
+                return piece;
+            }
+        }
+    }
+    return null; 
+}
+
+// Completion check (only one function now)
 function checkCompletion() {
     let isCorrect = pieces.every(piece => {
         let currentX = parseInt(piece.style.left) || 0;
@@ -62,6 +136,7 @@ function checkCompletion() {
     }
 }
 
+// "No" button random movement
 noButton.addEventListener("mouseover", () => {
     const maxX = window.innerWidth - noButton.clientWidth;
     const maxY = window.innerHeight - noButton.clientHeight;
@@ -73,10 +148,10 @@ noButton.addEventListener("mouseover", () => {
     noButton.style.top = `${newY}px`;
 });
 
-const button = document.querySelector('#yes')
-const element = document.querySelector("#response")
+// "Yes" button event
+const button = document.querySelector('#yes');
+const element = document.querySelector("#response");
 
-button.addEventListener("click", function(){
+button.addEventListener("click", function() {
     element.style.display = "block";
-})
-
+});
